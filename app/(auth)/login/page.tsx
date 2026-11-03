@@ -18,7 +18,7 @@ export default function LoginPage() {
     setIsPending(true);
 
     try {
-      // Dispatches credential parameters directly into our Auth.js credentials authorization hook
+      // Dispatches credential parameters directly into Auth.js credentials authorization hook
       const res = await signIn("credentials", {
         email,
         password,

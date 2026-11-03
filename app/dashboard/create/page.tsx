@@ -15,17 +15,19 @@ export default function CreateNewsletterPage() {
     e.preventDefault();
     setIsSaving(true);
 
-    // Placeholder simulated fallback id to mirror your custom auth setup parameters cleanly
-    const authorId = "1"; 
-
     try {
       const res = await fetch("/api/newsletters", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, image, content, authorId }),
+        body: JSON.stringify({ title, image, content }), // Look: authorId removed from client payload!
       });
 
       if (res.ok) {
+        setTitle("");
+        setImage("");
+        setContent("");
+        setIsSaving(false);
+
         router.push("/dashboard");
         router.refresh();
       } else {
@@ -37,6 +39,7 @@ export default function CreateNewsletterPage() {
       setIsSaving(false);
     }
   };
+  
 
   return (
     <main className="max-w-2xl mx-auto p-8 w-full flex-1">

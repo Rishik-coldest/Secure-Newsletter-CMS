@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Secure Newsletter CMS
 
-## Getting Started
+A full-stack, secure Content Management System (CMS) designed for managing and publishing newsletters. Built as part of the Advanced Web Development assignment at the University of East Anglia.
 
-First, run the development server:
+## 🛠️ Setup Instructions
 
-```bash
+Follow these steps to set up and run the application locally on your machine.
+ 
+
+### 2. Install Dependencies
+
+
+npm install
+
+
+### 3. Environment Configuration
+
+
+Create a `.env` file in the root directory and copy the contents from `.env.example`:
+
+Open the `.env` file and populate it with your local credentials (database connection strings and Google OAuth secrets).
+
+ 
+### 4. Database Initialization & Sync
+
+
+Run Prisma migrations to set up your PostgreSQL database schema:
+
+npx prisma db push
+
+
+### 6. Run the Development Server
+
+
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The application will be accessible locally at `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+ 
+## 🔐 Authentication Approach
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Learn More
+This project implements a secure session management using **Auth.js**:
 
-To learn more about Next.js, take a look at the following resources:
+* **Google OAuth Provider:** Partially implemented verified authentication handling via external Google accounts.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+* **Credentials Provider:** Fallback authentication using secure local email/password records.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+* **Route Guarding:** Next.js Middleware strictly protects all endpoint structures under `/dashboard` and its sub-routes. Unauthenticated visitors are automatically bounced away from private access fields.
 
-## Deploy on Vercel
+* **Secure Sessions:** Solid state management handling that hides or exposes navigation elements (`/login`, `/register`, `/dashboard`) dynamically based on context.
+ 
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 👥 Test Credentials 
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+  * **Email:** `harry@kane.com`
+
+  * **Password:** `ballondor`

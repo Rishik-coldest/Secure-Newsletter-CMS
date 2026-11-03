@@ -1,4 +1,3 @@
-// auth.ts
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
@@ -10,6 +9,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     Google({
       clientId: process.env.AUTH_GOOGLE_ID,
       clientSecret: process.env.AUTH_GOOGLE_SECRET,
+      authorization: {
+        params: {
+          prompt: "consent select_account",
+          access_type: "offline"
+        }
+      }
     }),
     Credentials({
       name: "Credentials",
@@ -47,17 +52,31 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       const isLoggedIn = !!auth?.user;
       const isDashboard = nextUrl.pathname.startsWith("/dashboard");
 
-      // Requirement 2.c & 2.e: Guards the dashboard from public access
+      // Guards the dashboard from public access
       if (isDashboard) {
         if (isLoggedIn) return true;
         return false; // Automatically redirects unauthenticated traffic to /login
       }
       return true;
     },
-    jwt({ token, user }) {
+    async jwt({ token, user }) {
+      // 1. Initial sign-in hook maps identity fields
       if (user) {
         token.id = user.id;
       }
+      
+      // 2. If token.id is missing, or is a string UUID containing hyphens,
+      // force look up our local PostgreSQL record using the active session email string.
+      if (token.email && (!token.id || (typeof token.id === "string" && token.id.includes("-")))) {
+        const dbUser = await prisma.user.findUnique({
+          where: { email: token.email },
+          select: { id: true }
+        });
+        if (dbUser) {
+          token.id = dbUser.id.toString();
+        }
+      }
+      
       return token;
     },
     session({ session, token }) {
